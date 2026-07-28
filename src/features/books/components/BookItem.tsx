@@ -1,6 +1,12 @@
 import type {IBook} from "../types";
 
-const BookItem = ({book}: { book: IBook }) => {
+type TBookItemProps = {
+    book: IBook;
+    onRemoveFromLibrary: (bookId: number) => void;
+    onAddToLibrary: (bookId: number) => void;
+};
+
+const BookItem = ({book, onRemoveFromLibrary, onAddToLibrary}: TBookItemProps) => {
     return (
         <div className="row row-cols-2 row-cols-md-1 g-2">
             <div className="col">
@@ -25,7 +31,9 @@ const BookItem = ({book}: { book: IBook }) => {
                 {/*    12*/}
                 {/*</div>*/}
                 <div>
-                    Add to list
+                    {book.isInLibrary ? (
+                        <button className="btn btn-sm btn-outline-danger" onClick={() => onRemoveFromLibrary(book.id)}>Remove from library</button>
+                    ) : <button className="btn btn-sm btn-outline-success" onClick={() => onAddToLibrary(book.id)}>Add to library</button>}
                 </div>
             </div>
         </div>

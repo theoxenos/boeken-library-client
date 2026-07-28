@@ -39,4 +39,8 @@ const post = <T>(url: string, data: T, options?: RequestInit) => {
     });
 };
 
-export default {get, post};
+const deleteRequest = (url: string, options?: RequestInit) => {
+    return request(url, { ...options, method: 'DELETE' });
+};
+
+export default {get, post, delete: deleteRequest};

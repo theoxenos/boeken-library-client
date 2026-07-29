@@ -5,6 +5,7 @@ import {
 import type {TUserLoginResponse} from "../types";
 import UserContext from "./UserContext";
 import useLocalStorage from "../../hooks/useLocalStorage.tsx";
+import {redirect} from "react-router-dom";
 
 const UserContextProvider = ({children}: { children: ReactNode }) => {
     const [user, setUser] = useLocalStorage<TUserLoginResponse | null>("user", null);
@@ -12,7 +13,7 @@ const UserContextProvider = ({children}: { children: ReactNode }) => {
     useEffect(() => {
         if (!user) {
             localStorage.clear();
-            return;
+            redirect("/login");
         }
 
         setUser(user);

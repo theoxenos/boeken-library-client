@@ -1,12 +1,13 @@
 import {Outlet} from "react-router-dom";
 import UserContextProvider from "../auth/context/UserContextProvider.tsx";
+import {Container} from "react-bootstrap";
 
 const MainLayout = () => {
     return (
         <UserContextProvider>
-            <div className="container-xxl vh-100">
+            <Container>
                 <Outlet/>
-            </div>
+            </Container>
         </UserContextProvider>
     );
 };

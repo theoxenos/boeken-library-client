@@ -1,4 +1,5 @@
 import type {IBook} from "../types";
+import {Col, Image, Row, Button} from "react-bootstrap";
 
 type TBookItemProps = {
     book: IBook;
@@ -8,21 +9,20 @@ type TBookItemProps = {
 
 const BookItem = ({book, onRemoveFromLibrary, onAddToLibrary}: TBookItemProps) => {
     return (
-        <div className="row row-cols-2 row-cols-md-1 g-2">
-            <div className="col">
-                <img
+        <Row xs={2} sm={2} md={1} className="g-2">
+            <Col>
+                <Image
                     src={book.coverUrl?.replace('L', 'M')}
                     alt={`Cover of ${book.title}`}
-                    // className="card-img"
                     className=""
                     style={{width: '180px', height: '290px', objectFit: 'cover'}}
                 />
-            </div>
-            <div className="col">
+            </Col>
+            <Col>
                 <div className="fw-bold">{book.title}</div>
                 <div className="text-muted">{book.author}</div>
                 <div className="text-secondary">{book.publishedYear}</div>
-            </div>
+            </Col>
             <div className="d-flex flex-row justify-content-between">
                 <div>
                     4/5
@@ -31,12 +31,17 @@ const BookItem = ({book, onRemoveFromLibrary, onAddToLibrary}: TBookItemProps) =
                 {/*    12*/}
                 {/*</div>*/}
                 <div>
-                    {book.isInLibrary ? (
-                        <button className="btn btn-sm btn-outline-danger" onClick={() => onRemoveFromLibrary(book.id)}>Remove from library</button>
-                    ) : <button className="btn btn-sm btn-outline-success" onClick={() => onAddToLibrary(book.id)}>Add to library</button>}
+                    {book.isInLibrary
+                        ? (
+                            <Button type="button" variant="outline-danger" size="sm"
+                                    onClick={() => onRemoveFromLibrary(book.id)}>Remove from library</Button>
+                        ) : (
+                            <Button type="button" variant="outline-success" size="sm"
+                                    onClick={() => onAddToLibrary(book.id)}>Add to library</Button>
+                        )}
                 </div>
             </div>
-        </div>
+        </Row>
     );
 };
 

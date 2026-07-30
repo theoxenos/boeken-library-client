@@ -5,6 +5,12 @@ import booksService from "../services/booksService.ts";
 const bookFormPageAction = async ({request}: LoaderFunctionArgs) => {
     const formData = await request.formData();
     const { isbn, title, author, publishedYear, coverUrl } = Object.fromEntries(formData) as Record<string, string>;
+    if(!author)
+        return {errors: {author: true}};
+
+    if(!title)
+        return {errors: {title: true}};
+
     await booksService.createBook({
         title,
         author,

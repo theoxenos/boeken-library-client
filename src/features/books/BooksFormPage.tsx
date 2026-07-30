@@ -1,10 +1,22 @@
 import {Button, Card, Col, FormControl, FormGroup, FormLabel, Image, InputGroup, Row} from "react-bootstrap";
-import {Form} from "react-router-dom";
+import {Form, useActionData} from "react-router-dom";
 import {useState} from "react";
 import booksService from "./services/booksService.ts";
 import type {IBookResponse} from "./types";
 
+type BooksFormErrors = {
+    errors: {
+        isbn?: boolean;
+        title?: boolean;
+        author?: boolean;
+        publishedYear?: boolean;
+        coverUrl?: boolean;
+    }
+}
+
 const BooksFormPage = () => {
+    const errors = useActionData() as BooksFormErrors | undefined;
+
     const [coverUrl, setCoverUrl] = useState<string>("");
     const [isbn, setIsbn] = useState<string>("");
     const [title, setTitle] = useState<string>("");
@@ -53,7 +65,11 @@ const BooksFormPage = () => {
                                         placeholder="Enter title"
                                         value={title}
                                         onChange={(e) => setTitle(e.target.value)}
+                                        isInvalid={errors?.errors.title}
                                     />
+                                    <FormControl.Feedback type="invalid">
+                                        Please enter a valid title.
+                                    </FormControl.Feedback>
                                 </FormGroup>
                                 <FormGroup controlId="bookAuthor">
                                     <FormLabel>Author</FormLabel>
@@ -63,7 +79,11 @@ const BooksFormPage = () => {
                                         placeholder="Enter author"
                                         value={author}
                                         onChange={(e) => setAuthor(e.target.value)}
+                                        isInvalid={errors?.errors.author}
                                     />
+                                    <FormControl.Feedback type="invalid">
+                                        Please enter a valid author.
+                                    </FormControl.Feedback>
                                 </FormGroup>
                                 <FormGroup controlId="bookYear">
                                     <FormLabel>Published Year</FormLabel>

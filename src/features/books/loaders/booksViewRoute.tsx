@@ -1,9 +1,9 @@
 import booksService from "../services/booksService.ts";
 import BooksView from "../BooksView.tsx";
 import RequireAuth from "../../components/RequireAuth.tsx";
+import type {LoaderFunctionArgs} from "react-router-dom";
 
-type BooksLoaderParams = { request: { signal: AbortSignal } };
-const booksLoader = async ({request: {signal}}: BooksLoaderParams) => {
+const booksLoader = async ({request: {signal}}: LoaderFunctionArgs) => {
     const books = booksService.getAllBooks(signal);
 
     return {books};

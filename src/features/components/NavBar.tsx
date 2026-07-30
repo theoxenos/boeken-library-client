@@ -13,7 +13,7 @@ const NavBar = () => {
                     {user ? (
                         <>
                             <NavDropdown title="Books" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="/books/add">Add book</NavDropdown.Item>
+                                <NavDropdown.Item href="/books/new">Add book</NavDropdown.Item>
                                 {/*<NavDropdown.Item href="/books/notes">View all notes</NavDropdown.Item>*/}
                             </NavDropdown>
                             <NavDropdown title={user?.name} id="basic-nav-dropdown">

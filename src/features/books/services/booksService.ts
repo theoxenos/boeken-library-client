@@ -1,5 +1,5 @@
 import {viteApiUrl} from "../../../utils/config.ts";
-import type {IBook, IBookResponse} from "../types";
+import type {IBook, TBookRequest, IBookResponse} from "../types";
 import apiService from "../../api/apiService.ts";
 
 const booksEndpoint = 'books';
@@ -16,4 +16,12 @@ const getAllBooks = async (signal: AbortSignal) => {
     });
 };
 
-export default {getAllBooks};
+const getBookByIsbn = async (isbn: string, signal?: AbortSignal) => {
+    return apiService.get(`${viteApiUrl}/${booksEndpoint}/isbn/${isbn}`, {signal});
+};
+
+const createBook = async (book: TBookRequest, signal?: AbortSignal) => {
+    return apiService.post(`${viteApiUrl}/${booksEndpoint}`, book, {signal});
+};
+
+export default {getAllBooks, getBookByIsbn, createBook};

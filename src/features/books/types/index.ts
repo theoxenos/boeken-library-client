@@ -18,3 +18,5 @@ export interface IBookResponse extends IBaseBook {
     createdAt: string;
     updatedAt: string;
 }
+
+export type TBookRequest = Omit<IBaseBook, 'createdAt' | 'updatedAt' | 'id' | 'isInLibrary'>

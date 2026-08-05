@@ -21,4 +21,4 @@ export interface IBookResponse extends IBaseBook {
     updatedAt: string;
 }
 
-export type TBookRequest = Omit<IBaseBook, 'createdAt' | 'updatedAt' | 'id'>
+export type TBookRequest = Omit<IBaseBook, 'createdAt' | 'updatedAt' | 'id' | 'averageRating' | 'rating' | 'status'>;

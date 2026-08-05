@@ -7,7 +7,7 @@ import {Col, Row} from "react-bootstrap";
 
 const BooksView = () => {
     const {books: booksPromise} = useLoaderData();
-    const { revalidate } = useRevalidator();
+    const {revalidate} = useRevalidator();
 
     const handleAddToLibrary = async (bookId: number) => {
         await libraryService.addToLibrary(bookId);
@@ -19,14 +19,20 @@ const BooksView = () => {
         await revalidate();
     };
 
+    const handleSetRating = async (bookId: number, rating: number) => {
+        await libraryService.updateLibraryBook(bookId, rating);
+        await revalidate();
+    };
+
     return (
         <Row xs={1} md={4} lg={6} className="g-3">
             <Suspense fallback={<div>Loading...</div>}>
-                <Await resolve={booksPromise}>
+                <Await key={booksPromise} resolve={booksPromise}>
                     {(books: IBook[]) => books.map((book) => (
                         <Col key={book.id} className="mb-3 h-100">
                             <BookItem book={book} onAddToLibrary={handleAddToLibrary}
-                                      onRemoveFromLibrary={handleRemoveFromLibrary}/>
+                                      onRemoveFromLibrary={handleRemoveFromLibrary}
+                                      onSetRating={handleSetRating}/>
                         </Col>
                     ))}
                 </Await>

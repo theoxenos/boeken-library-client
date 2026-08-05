@@ -6,7 +6,9 @@ interface IBaseBook {
     isbn10?: string;
     isbn13?: string;
     coverUrl?: string;
-    isInLibrary: boolean;
+    averageRating: number;
+    rating: number;
+    status: string;
 }
 
 export interface IBook extends IBaseBook {
@@ -19,4 +21,4 @@ export interface IBookResponse extends IBaseBook {
     updatedAt: string;
 }
 
-export type TBookRequest = Omit<IBaseBook, 'createdAt' | 'updatedAt' | 'id' | 'isInLibrary'>
+export type TBookRequest = Omit<IBaseBook, 'createdAt' | 'updatedAt' | 'id'>

@@ -39,8 +39,16 @@ const post = <T>(url: string, data: T, options?: RequestInit) => {
     });
 };
 
+const put = <T>(url: string, data: T, options?: RequestInit) => {
+    return request(url, {
+        ...options,
+        method: 'PUT',
+        body: JSON.stringify(data),
+    });
+};
+
 const deleteRequest = (url: string, options?: RequestInit) => {
     return request(url, { ...options, method: 'DELETE' });
 };
 
-export default {get, post, delete: deleteRequest};
+export default {get, post, put, delete: deleteRequest};

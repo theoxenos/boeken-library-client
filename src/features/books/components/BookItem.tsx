@@ -1,13 +1,19 @@
 import type {IBook} from "../types";
-import {Col, Image, Row, Button} from "react-bootstrap";
+import {Col, Image, Row} from "react-bootstrap";
+import StarRating from "./StarRatingComponent.tsx";
 
 type TBookItemProps = {
     book: IBook;
     onRemoveFromLibrary: (bookId: number) => void;
     onAddToLibrary: (bookId: number) => void;
+    onSetRating: (bookId: number, rating: number) => void;
 };
 
-const BookItem = ({book, onRemoveFromLibrary, onAddToLibrary}: TBookItemProps) => {
+const BookItem = ({book, onRemoveFromLibrary, onAddToLibrary, onSetRating}: TBookItemProps) => {
+    const rating = book.averageRating ?? 0;
+    const handleRatingChange = (newRating: number) => {
+        onSetRating(book.id, newRating);
+    };
     return (
         <Row xs={2} sm={2} md={1} className="g-2">
             <Col>
@@ -23,6 +29,12 @@ const BookItem = ({book, onRemoveFromLibrary, onAddToLibrary}: TBookItemProps) =
                 <div className="text-muted">{book.author}</div>
                 <div className="text-secondary">{book.publishedYear}</div>
             </Col>
+            <div className="d-flex align-items-center gap-2">
+                <StarRating value={rating} onChange={handleRatingChange}/>
+                {rating > 0 && (
+                    <small className="text-muted">{rating} / 5</small>
+                )}
+            </div>
             <div className="d-flex flex-row justify-content-between">
                 <div>
                     4/5

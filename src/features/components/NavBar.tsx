@@ -1,9 +1,13 @@
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import useUserContext from "../auth/hooks/useUserContext.tsx";
+import BookSearchForm from "../components/BookSearchForm.tsx";
+import {useSearchParams} from "react-router-dom";
 
 const NavBar = () => {
     const {user, setUser} = useUserContext();
-
+    const [searchParams] = useSearchParams();
+    const {searchText = '', searchType = ''} = Object.fromEntries(searchParams);
+    
     return (
         <Navbar expand="sm" className="bg-body-tertiary mb-3 p-3">
             <Navbar.Brand href="/">BOEKMaatwerk</Navbar.Brand>
@@ -24,20 +28,8 @@ const NavBar = () => {
                     ) : (
                         <Nav.Link href="/login">Log In</Nav.Link>
                     )}
-                    {/*<SplitButton*/}
-                    {/*    id="dropdown-split-basic"*/}
-                    {/*    drop="down"*/}
-                    {/*    title="Actions"*/}
-                    {/*    variant="light"*/}
-                    {/*    className="ms-auto"*/}
-                    {/*>*/}
-                    {/*    <NavDropdown.Item href="#/action-1">Action</NavDropdown.Item>*/}
-                    {/*    <NavDropdown.Item href="#/action-2">Another action</NavDropdown.Item>*/}
-                    {/*    <NavDropdown.Item href="#/action-3">Something else</NavDropdown.Item>*/}
-                    {/*    <Dropdown.Divider />*/}
-                    {/*    <NavDropdown.Item href="#/action-4">Separated link</NavDropdown.Item>*/}
-                    {/*</SplitButton>*/}
                 </Nav>
+                <BookSearchForm searchText={searchText} searchType={searchType}/>
             </Navbar.Collapse>
         </Navbar>
     );

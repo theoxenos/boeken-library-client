@@ -1,11 +1,11 @@
 import {viteApiUrl} from "../../../utils/config.ts";
-import type {IBook, TBookRequest, IBookResponse} from "../types";
+import type {IBook, IBookResponse, TBookRequest} from "../types";
 import apiService from "../../api/apiService.ts";
 
 const booksEndpoint = 'books';
 
-const getAllBooks = async (signal: AbortSignal) => {
-    const booksResponse: IBookResponse[] = await apiService.get(`${viteApiUrl}/${booksEndpoint}`, {signal});
+const getAllBooks = async (signal: AbortSignal, params?: Record<string, string>) => {
+    const booksResponse: IBookResponse[] = await apiService.get(`${viteApiUrl}/${booksEndpoint}?${new URLSearchParams(params)}`, {signal});
     return booksResponse.map((book: IBookResponse): IBook => {
         const {createdAt, updatedAt} = book;
         return {

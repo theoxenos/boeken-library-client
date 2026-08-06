@@ -1,6 +1,7 @@
 import type {IBook} from "../types";
 import {Col, Image, Row} from "react-bootstrap";
 import StarRating from "./StarRatingComponent.tsx";
+import {NavLink} from "react-router-dom";
 
 type TBookItemProps = {
     book: IBook;
@@ -26,7 +27,9 @@ const BookItem = ({book, onRemoveFromLibrary, onAddToLibrary, onSetRating}: TBoo
             </Col>
             <Col>
                 <div className="fw-bold">{book.title}</div>
-                <div className="text-muted">{book.author}</div>
+                <div className="text-muted">
+                    <NavLink to={`/?searchText=${book.author}&searchType=author`}>{book.author}</NavLink>
+                </div>
                 <div className="text-secondary">{book.publishedYear}</div>
             </Col>
             <div className="d-flex align-items-center gap-2">

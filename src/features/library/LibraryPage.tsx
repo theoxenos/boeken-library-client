@@ -1,5 +1,5 @@
 import {Col, Row} from "react-bootstrap";
-import {Await, useLoaderData} from "react-router-dom";
+import {Await, useLoaderData, useParams} from "react-router-dom";
 import {Suspense, useEffect, useState} from "react";
 import type {ILibraryBook} from "./types";
 import notesService from "./services/notesService.ts";
@@ -8,8 +8,13 @@ import LibraryBookDetail from "./components/LibraryBookDetail.tsx";
 
 const LibraryPage = () => {
     const {booksPromise} = useLoaderData();
-    const [selectedBookId, setSelectedBookId] = useState<number | null>(null);
+    const params = useParams();
+    const [selectedBookId, setSelectedBookId] = useState<number | null>(Number(params?.bookId) || null);
     const [bookNotes, setBookNotes] = useState<[]>([]);
+
+    useEffect(() => {
+        setSelectedBookId(Number(params?.bookId) || null);
+    }, [params?.bookId]);
 
     useEffect(() => {
         if (!selectedBookId) {
@@ -24,12 +29,6 @@ const LibraryPage = () => {
         void getNotesForBook();
     }, [selectedBookId])
 
-    // const statusesDict = {
-    //     'To read': 'to-read',
-    //     'Reading': 'reading',
-    //     'Read': 'read',
-    // } as const;
-
     return (
         <Row>
             <Suspense fallback={<div>Loading...</div>}>
@@ -37,7 +36,7 @@ const LibraryPage = () => {
                     {(books: ILibraryBook[]) => (
                         <>
                             <Col sm={12} md={3} className="">
-                                <LibraryBookSearch books={books} setSelectedBookId={setSelectedBookId}/>
+                                <LibraryBookSearch books={books}/>
                             </Col>
                             <Col sm={12} md={9} className="">
                                 <LibraryBookDetail key={selectedBookId}

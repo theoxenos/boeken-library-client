@@ -1,12 +1,30 @@
 import {Button, Card, FormControl, InputGroup, ListGroup} from "react-bootstrap";
 import type {ILibraryBook} from "../types";
+import {NavLink, type NavLinkRenderProps} from "react-router-dom";
+
 
 type TLibraryBookSearchProps = {
     books: ILibraryBook[];
-    setSelectedBookId: (bookId: number) => void;
 }
 
-const LibraryBookSearch = ({books, setSelectedBookId}: TLibraryBookSearchProps) => {
+const LibraryBookSearch = ({books}: TLibraryBookSearchProps) => {
+
+    const getCssClasses = ({isActive}: NavLinkRenderProps) => {
+        if (isActive) {
+            const activeClasses = [
+                'nav-link',
+                'fw-semibold',
+                'pb-1',
+                'border-2',
+                'border-bottom',
+                'border-info',
+            ]
+            return activeClasses.join(' ');
+        }
+
+        return 'nav-link';
+    };
+
     return (
         <Card>
             <Card.Body>
@@ -17,13 +35,12 @@ const LibraryBookSearch = ({books, setSelectedBookId}: TLibraryBookSearchProps) 
                 <ListGroup>
                     {books.map(book => (
                         <ListGroup.Item key={book.bookId}>
-                            <Button variant=""
-                                    size="sm"
-                                    className="text-start"
-                                    onClick={() => setSelectedBookId(book.bookId)}
+                            <NavLink
+                                to={`/library/books/${book.bookId}`}
+                                className={getCssClasses}
                             >
                                 {book.title} ({book.publishedYear})
-                            </Button>
+                            </NavLink>
                         </ListGroup.Item>
                     ))}
                 </ListGroup>

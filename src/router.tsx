@@ -19,7 +19,7 @@ const router = [{
         path: '/register',
         element: <AuthView/>
     }, {
-        path: '/library',
+        path: '/library/books?/:bookId?',
         ...libraryPageRoute
     }, {
         path: '/books/new',

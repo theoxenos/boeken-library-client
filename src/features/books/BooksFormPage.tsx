@@ -42,7 +42,7 @@ const BooksFormPage = () => {
                         </Col>
                         <Col sm={6}>
                             <Form method="post">
-                                <FormGroup controlId="bookIsbn">
+                                <FormGroup controlId="bookIsbn" className="mb-3">
                                     <FormLabel>ISBN</FormLabel>
                                     <InputGroup>
                                         <FormControl
@@ -57,7 +57,7 @@ const BooksFormPage = () => {
                                                 onClick={handleSearchByIsbn}>Search</Button>
                                     </InputGroup>
                                 </FormGroup>
-                                <FormGroup controlId="bookTitle">
+                                <FormGroup controlId="bookTitle" className="mb-3">
                                     <FormLabel>Title</FormLabel>
                                     <FormControl
                                         name="title"
@@ -71,7 +71,7 @@ const BooksFormPage = () => {
                                         Please enter a valid title.
                                     </FormControl.Feedback>
                                 </FormGroup>
-                                <FormGroup controlId="bookAuthor">
+                                <FormGroup controlId="bookAuthor" className="mb-3">
                                     <FormLabel>Author</FormLabel>
                                     <FormControl
                                         name="author"
@@ -85,7 +85,7 @@ const BooksFormPage = () => {
                                         Please enter a valid author.
                                     </FormControl.Feedback>
                                 </FormGroup>
-                                <FormGroup controlId="bookYear">
+                                <FormGroup controlId="bookYear" className="mb-3">
                                     <FormLabel>Published Year</FormLabel>
                                     <FormControl
                                         name="publishedYear"
@@ -95,7 +95,7 @@ const BooksFormPage = () => {
                                         onChange={(e) => setYear(Number(e.target.value))}
                                     />
                                 </FormGroup>
-                                <FormGroup controlId="bookCover">
+                                <FormGroup controlId="bookCover" className="mb-3">
                                     <FormLabel>Cover URL</FormLabel>
                                     <FormControl
                                         name="coverUrl"

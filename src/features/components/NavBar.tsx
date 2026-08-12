@@ -29,7 +29,7 @@ const NavBar = () => {
                         <Nav.Link href="/login">Log In</Nav.Link>
                     )}
                 </Nav>
-                <BookSearchForm searchText={searchText} searchType={searchType}/>
+                {user && <BookSearchForm searchText={searchText} searchType={searchType}/>}
             </Navbar.Collapse>
         </Navbar>
     );

@@ -12,8 +12,9 @@ const removeFromLibrary = async (bookId: number): Promise<void> => {
     await apiService.delete(`${viteApiUrl}/${libraryEndpoint}/${bookId}`);
 };
 
-const getBooksFromLibrary = async (signal: AbortSignal): Promise<void> => {
-    const bookResponse = await apiService.get(`${viteApiUrl}/${libraryEndpoint}`, {signal});
+const getBooksFromLibrary = async (params?: Record<string, string>, signal?: AbortSignal) => {
+    const query = params ? `?${new URLSearchParams(params)}` : '';
+    const bookResponse = await apiService.get(`${viteApiUrl}/${libraryEndpoint}${query}`, {signal});
 
     return bookResponse.map((book: IBookResponse) => ({
         ...book,

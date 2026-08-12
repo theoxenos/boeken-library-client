@@ -28,8 +28,11 @@ const LibraryPage = () => {
     );
 };
 
-const loader = async ({request: {signal}}: LoaderFunctionArgs) => {
-    const booksPromise = libraryService.getBooksFromLibrary(signal);
+const loader = async ({request: {signal}, url}: LoaderFunctionArgs) => {
+    const urlParams = new URL(url).searchParams;
+    const title = urlParams.get("title");
+    const queryParams = title ? {title} : undefined;
+    const booksPromise = libraryService.getBooksFromLibrary(queryParams, signal);
 
     return {booksPromise};
 };

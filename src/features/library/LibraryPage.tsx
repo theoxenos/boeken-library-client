@@ -1,33 +1,12 @@
 import {Col, Row} from "react-bootstrap";
-import {Await, useLoaderData, useParams} from "react-router-dom";
-import {Suspense, useEffect, useState} from "react";
+import {Await, type LoaderFunctionArgs, Outlet, useLoaderData} from "react-router-dom";
+import {Suspense} from "react";
 import type {ILibraryBook} from "./types";
-import notesService from "./services/notesService.ts";
 import LibraryBookSearch from "./components/LibraryBookSearch.tsx";
-import LibraryBookDetail from "./components/LibraryBookDetail.tsx";
+import libraryService from "./services/libraryService.ts";
 
 const LibraryPage = () => {
     const {booksPromise} = useLoaderData();
-    const params = useParams();
-    const [selectedBookId, setSelectedBookId] = useState<number | null>(Number(params?.bookId) || null);
-    const [bookNotes, setBookNotes] = useState<[]>([]);
-
-    useEffect(() => {
-        setSelectedBookId(Number(params?.bookId) || null);
-    }, [params?.bookId]);
-
-    useEffect(() => {
-        if (!selectedBookId) {
-            return;
-        }
-
-        const getNotesForBook = async () => {
-            const data = await notesService.getNotesForBook(selectedBookId);
-            setBookNotes(data);
-        };
-
-        void getNotesForBook();
-    }, [selectedBookId])
 
     return (
         <Row>
@@ -35,15 +14,11 @@ const LibraryPage = () => {
                 <Await resolve={booksPromise}>
                     {(books: ILibraryBook[]) => (
                         <>
-                            <Col sm={12} md={3} className="">
+                            <Col sm={12} md={3}>
                                 <LibraryBookSearch books={books}/>
                             </Col>
-                            <Col sm={12} md={9} className="">
-                                <LibraryBookDetail key={selectedBookId}
-                                                   books={books}
-                                                   selectedBookId={selectedBookId!}
-                                                   bookNotes={bookNotes}
-                                />
+                            <Col sm={12} md={9}>
+                                <Outlet/>
                             </Col>
                         </>
                     )}
@@ -53,4 +28,10 @@ const LibraryPage = () => {
     );
 };
 
-export default LibraryPage;
+const loader = async ({request: {signal}}: LoaderFunctionArgs) => {
+    const booksPromise = libraryService.getBooksFromLibrary(signal);
+
+    return {booksPromise};
+};
+
+export const libraryPageRoute = {loader, element: <LibraryPage/>};

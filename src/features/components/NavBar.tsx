@@ -7,7 +7,7 @@ const NavBar = () => {
     const {user, setUser} = useUserContext();
     const [searchParams] = useSearchParams();
     const {searchText = '', searchType = ''} = Object.fromEntries(searchParams);
-    
+
     return (
         <Navbar expand="sm" className="bg-body-tertiary mb-3 p-3">
             <Navbar.Brand href="/">BOEKMaatwerk</Navbar.Brand>
@@ -21,7 +21,7 @@ const NavBar = () => {
                                 {/*<NavDropdown.Item href="/books/notes">View all notes</NavDropdown.Item>*/}
                             </NavDropdown>
                             <NavDropdown title={user?.name} id="basic-nav-dropdown">
-                                <NavDropdown.Item href="/library">My Library</NavDropdown.Item>
+                                <NavDropdown.Item href="/library/books">My Library</NavDropdown.Item>
                                 <NavDropdown.Item href="#" onClick={() => setUser(null)}>Log Out</NavDropdown.Item>
                             </NavDropdown>
                         </>

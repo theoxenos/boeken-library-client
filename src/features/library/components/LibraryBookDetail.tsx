@@ -1,86 +1,52 @@
-import {Button, Card} from "react-bootstrap";
-import type {IBookNote, ILibraryBook} from "../types";
-import LibraryBookNotesTable from "./LibraryBookNotesTable.tsx";
-import {useState} from "react";
-import LibraryBookNoteForm from "./LibraryBookNoteForm.tsx";
+import {Card} from "react-bootstrap";
+import {Suspense} from "react";
+import {Await, type LoaderFunctionArgs, NavLink, Outlet, useLoaderData, useLocation} from "react-router-dom";
+import type {IBook} from "../../books/types";
+import booksService from "../../books/services/booksService.ts";
 
-type TLibraryBookDetailProps = {
-    books: ILibraryBook[];
-    selectedBookId: number;
-    bookNotes: IBookNote[];
-};
-
-const LibraryBookDetail = ({books, selectedBookId, bookNotes}: TLibraryBookDetailProps) => {
-    const [bookDetailState, setBookDetailState] = useState<'detail' | 'create' | 'edit'>('detail');
-    const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null);
-
-    const handleCreateNewNote = () => {
-        setSelectedNoteId(null);
-        setBookDetailState('create');
-    };
-
-    const handleEditNote = (noteId: number) => {
-        setSelectedNoteId(noteId);
-        setBookDetailState('edit');
-    };
-
-    const handleBackToDetail = () => {
-        setBookDetailState('detail');
-        setSelectedNoteId(null);
-    };
-
-    if (!selectedBookId) {
-        return (
-            <Card>
-                <Card.Header className="d-flex">
-                    <div className="text-muted">No book selected</div>
-                </Card.Header>
-                <Card.Body className="py-5 text-center">
-                    <span className="bi bi-book" style={{fontSize: "6rem"}}></span>
-                    <div className="text-muted">Please select a book to view its notes</div>
-                </Card.Body>
-            </Card>
-        )
-    }
+const LibraryBookDetail = () => {
+    const {bookPromise} = useLoaderData();
+    const location = useLocation();
+    const isNoteForm = location.pathname.includes('notes');
 
     return (
         <Card>
             <Card.Header className="d-flex">
-                <div className="me-auto">
-                    Notes for {books.find(b => b.bookId === selectedBookId)?.title}
-                </div>
-                {bookDetailState === 'detail' && (
-                    <Button variant="success" size="sm" onClick={handleCreateNewNote}>
-                        <span className="bi bi-plus"></span>
-                    </Button>
-                )}
-                {bookDetailState !== 'detail' && (
-                    <Button variant="secondary" size="sm" onClick={handleBackToDetail}>
-                        <span className="bi bi-arrow-left"></span>
-                    </Button>
-                )}
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Await resolve={bookPromise}>
+                        {(book: IBook) => {
+                            return (
+                                <div className="me-auto">
+                                    Notes for {book.title}
+                                </div>
+                            );
+                        }}
+                    </Await>
+                    {!isNoteForm && (
+                        <NavLink to="notes/new" className="btn btn-sm btn-success">
+                            <span className="bi bi-plus"></span>
+                        </NavLink>
+                    )}
+                    {isNoteForm && (
+                        <NavLink to={'.'} className="btn btn-sm btn-secondary">
+                            <span className="bi bi-arrow-left"></span>
+                        </NavLink>
+                    )}
+                </Suspense>
             </Card.Header>
             <Card.Body>
-                {bookDetailState === 'detail' && (
-                    <LibraryBookNotesTable
-                        bookNotes={bookNotes}
-                        editNote={handleEditNote}
-                        deleteNote={() => alert('not implemented')}
-                    />
-                )}
-                {(bookDetailState === 'create' || bookDetailState === 'edit') && (
-                    <LibraryBookNoteForm
-                        note={bookDetailState === 'edit'
-                            ? bookNotes.find(n => n.id === selectedNoteId)!
-                            : undefined
-                        }
-                        onCancel={handleBackToDetail}
-                    />
-                )}
+                <Outlet/>
             </Card.Body>
         </Card>
     );
 };
 
 
-export default LibraryBookDetail;
+const loader = async ({params, request: {signal}}: LoaderFunctionArgs) => {
+    const bookId = Number(params.bookId);
+    const bookPromise = booksService.getBookById(bookId, signal);
+
+    return {bookPromise};
+};
+
+export const libraryBookDetailRoute = {loader, element: <LibraryBookDetail/>};

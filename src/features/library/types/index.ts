@@ -9,7 +9,7 @@ export interface ILibraryBook {
     status: string;
 }
 
-interface IBaseNote {
+export interface IBaseNote {
     id: number;
     bookId: number;
     title: string;

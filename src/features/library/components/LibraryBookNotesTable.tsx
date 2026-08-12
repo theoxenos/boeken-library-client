@@ -1,51 +1,61 @@
 import {Button, Table} from "react-bootstrap";
 import {formatDateToLocale} from "../../../utils/dateUtils.ts";
+import {Await, type LoaderFunctionArgs, NavLink, useLoaderData} from "react-router-dom";
+import {Suspense} from "react";
 import type {IBookNote} from "../types";
+import notesService from "../services/notesService.ts";
 
-type LibraryBookNotesTableProps = {
-    bookNotes: IBookNote[];
-    deleteNote: (id: number) => void;
-    editNote: (id: number) => void;
-}
+const LibraryBookNotesTable = () => {
+    const {notesPromise}: { notesPromise: Promise<IBookNote[]> } = useLoaderData();
 
-const LibraryBookNotesTable = ({bookNotes, deleteNote, editNote}: LibraryBookNotesTableProps) => (
-    <Table>
-        <thead>
-        <tr>
-            <th>Title</th>
-            <th>Created</th>
-            <th>Updated</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {bookNotes.map(note => (
-            <tr key={note.id}>
-                <td>{note.title}</td>
-                <td>
-                    {formatDateToLocale(note.createdAt, {
-                        locale: 'nl-NL',
-                        options: {dateStyle: 'short', timeStyle: 'short'}
-                    })}
-                </td>
-                <td>
-                    {formatDateToLocale(note.updatedAt, {
-                        locale: 'nl-NL',
-                        options: {dateStyle: 'short', timeStyle: 'short'}
-                    })}
-                </td>
-                <td>
-                    <Button variant="primary" size="sm" className="me-2" onClick={() => editNote(note.id)}>
-                        <span className="bi bi-pencil"></span>
-                    </Button>
-                    <Button variant="danger" size="sm" onClick={() => deleteNote(note.id)}>
-                        <span className="bi bi-trash"></span>
-                    </Button>
-                </td>
+    return (
+        <Table>
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th></th>
             </tr>
-        ))}
-        </tbody>
-    </Table>
-);
+            </thead>
+            <tbody>
+            <Suspense>
+                <Await resolve={notesPromise}>
+                    {(bookNotes) => bookNotes.map(note => (
+                        <tr key={note.id}>
+                            <td>{note.title}</td>
+                            <td>
+                                {formatDateToLocale(note.createdAt, {
+                                    locale: 'nl-NL',
+                                    options: {dateStyle: 'short', timeStyle: 'short'}
+                                })}
+                            </td>
+                            <td>
+                                {formatDateToLocale(note.updatedAt, {
+                                    locale: 'nl-NL',
+                                    options: {dateStyle: 'short', timeStyle: 'short'}
+                                })}
+                            </td>
+                            <td>
+                                <NavLink to={`notes/${note.id}/edit`} className="btn btn-sm btn-primary me-2">
+                                    <span className="bi bi-pencil"></span>
+                                </NavLink>
+                                <Button variant="danger" size="sm">
+                                    <span className="bi bi-trash"></span>
+                                </Button>
+                            </td>
+                        </tr>
+                    ))}
+                </Await>
+            </Suspense>
+            </tbody>
+        </Table>
+    );
+};
 
-export default LibraryBookNotesTable;
+const loader = async ({params, request: {signal}}: LoaderFunctionArgs) => {
+    const notesPromise = notesService.getNotesByBookId(Number(params.bookId), signal);
+    return {notesPromise};
+};
+
+export const libraryBookNotesTableRoute = {loader, element: <LibraryBookNotesTable/>};

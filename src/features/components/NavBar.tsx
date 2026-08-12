@@ -6,7 +6,7 @@ import {useSearchParams} from "react-router-dom";
 const NavBar = () => {
     const {user, setUser} = useUserContext();
     const [searchParams] = useSearchParams();
-    const {searchText = '', searchType = ''} = Object.fromEntries(searchParams);
+    const {searchText = '', searchType = 'title'} = Object.fromEntries(searchParams);
 
     return (
         <Navbar expand="sm" className="bg-body-tertiary mb-3 p-3">
@@ -29,7 +29,7 @@ const NavBar = () => {
                         <Nav.Link href="/login">Log In</Nav.Link>
                     )}
                 </Nav>
-                {user && <BookSearchForm searchText={searchText} searchType={searchType}/>}
+                {user && <BookSearchForm key={searchText} searchText={searchText} searchType={searchType}/>}
             </Navbar.Collapse>
         </Navbar>
     );

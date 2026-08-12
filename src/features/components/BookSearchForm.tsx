@@ -7,7 +7,7 @@ type BookSearchFormProps = {
 }
 
 const BookSearchForm = ({searchText, searchType}: BookSearchFormProps) => (
-    <Form className="col-6">
+    <Form className="col-12 col-md-6">
         <InputGroup>
             <FormControl id="searchText"
                          name="searchText"
@@ -22,7 +22,9 @@ const BookSearchForm = ({searchText, searchType}: BookSearchFormProps) => (
                 <option value="author">Author</option>
                 <option value="isbn">ISBN</option>
             </FormSelect>
-            <Button type="submit">Search</Button>
+            <Button type="submit">
+                <span className="bi bi-search"></span>
+            </Button>
         </InputGroup>
     </Form>
 );

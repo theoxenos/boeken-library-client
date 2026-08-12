@@ -18,7 +18,8 @@ const AuthView = () => {
     const {setUser} = useUserContext();
 
     const handleLogin = async (loginData: TUserLogin) => {
-        setUser(await authService.login(loginData));
+        const authResponse = await authService.login(loginData);
+        setUser(authResponse?.error ? null : authResponse);
         return navigate(redirectPath);
     };
 

@@ -16,6 +16,10 @@ const getAllBooks = async (signal: AbortSignal, params?: Record<string, string>)
     });
 };
 
+const getBookById = (id: number, signal?: AbortSignal) => {
+    return apiService.get(`${viteApiUrl}/${booksEndpoint}/${id}`, {signal});
+};
+
 const getBookByIsbn = async (isbn: string, signal?: AbortSignal) => {
     return apiService.get(`${viteApiUrl}/${booksEndpoint}/isbn/${isbn}`, {signal});
 };
@@ -24,4 +28,4 @@ const createBook = async (book: TBookRequest, signal?: AbortSignal) => {
     return apiService.post(`${viteApiUrl}/${booksEndpoint}`, book, {signal});
 };
 
-export default {getAllBooks, getBookByIsbn, createBook};
+export default {getAllBooks, getBookById, getBookByIsbn, createBook};

@@ -14,7 +14,7 @@ const LibraryPage = () => {
                 <Await resolve={booksPromise}>
                     {(books: ILibraryBook[]) => (
                         <>
-                            <Col sm={12} md={3}>
+                            <Col sm={12} md={3} className="mb-3 mb-md-0">
                                 <LibraryBookSearch books={books}/>
                             </Col>
                             <Col sm={12} md={9}>

@@ -1,5 +1,5 @@
 import type {IBook} from "../types";
-import {Col, Image, Row} from "react-bootstrap";
+import {Col, Dropdown, Image, Row, SplitButton} from "react-bootstrap";
 import StarRating from "./StarRatingComponent.tsx";
 import {NavLink} from "react-router-dom";
 
@@ -48,20 +48,15 @@ const BookItem = ({book, onRemoveFromLibrary, onAddToLibrary, onSetRating}: TBoo
             </div>
             <div className="d-flex flex-row justify-content-between">
                 <div>
-                    4/5
-                </div>
-                {/*<div>*/}
-                {/*    12*/}
-                {/*</div>*/}
-                <div>
-                    {book.isInLibrary
-                        ? (
-                            <Button type="button" variant="outline-danger" size="sm"
-                                    onClick={() => onRemoveFromLibrary(book.id)}>Remove from library</Button>
-                        ) : (
-                            <Button type="button" variant="outline-success" size="sm"
-                                    onClick={() => onAddToLibrary(book.id)}>Add to library</Button>
-                        )}
+                    <SplitButton
+                        id="dropdown-button-drop-up"
+                        drop="down-centered"
+                        title={book.status ? 'Remove from library' : 'Add to library'}
+                        variant={book.status ? 'outline-danger' : 'outline-success'}
+                        size="sm"
+                        onClick={book.status ? () => onRemoveFromLibrary(book.id) : () => onAddToLibrary(book.id)}>
+                        <Dropdown.Item href={`books/${book.id}/edit`}>Edit</Dropdown.Item>
+                    </SplitButton>
                 </div>
             </div>
         </Row>

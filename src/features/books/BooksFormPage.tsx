@@ -1,6 +1,6 @@
 import {Button, Card, Col, FormControl, FormGroup, FormLabel, Image, InputGroup, Row} from "react-bootstrap";
-import {Form, useActionData} from "react-router-dom";
-import {useState} from "react";
+import {Await, Form, type LoaderFunctionArgs, NavLink, redirect, useActionData, useLoaderData} from "react-router-dom";
+import {Suspense, useState} from "react";
 import booksService from "./services/booksService.ts";
 import type {IBookResponse} from "./types";
 
@@ -15,13 +15,25 @@ type BooksFormErrors = {
 }
 
 const BooksFormPage = () => {
+    const {bookPromise} = useLoaderData() as { bookPromise: Promise<IBookResponse | null> };
+
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <Await resolve={bookPromise}>
+                {(book: IBookResponse | null) => <BooksForm book={book}/>}
+            </Await>
+        </Suspense>
+    );
+};
+
+const BooksForm = ({book}: { book: IBookResponse | null }) => {
     const errors = useActionData() as BooksFormErrors | undefined;
 
-    const [coverUrl, setCoverUrl] = useState<string>("");
-    const [isbn, setIsbn] = useState<string>("");
-    const [title, setTitle] = useState<string>("");
-    const [author, setAuthor] = useState<string>("");
-    const [year, setYear] = useState<number>();
+    const [coverUrl, setCoverUrl] = useState<string>(book?.coverUrl ?? "");
+    const [isbn, setIsbn] = useState<string>(book?.isbn10 || book?.isbn13 || "");
+    const [title, setTitle] = useState<string>(book?.title ?? "");
+    const [author, setAuthor] = useState<string>(book?.author ?? "");
+    const [year, setYear] = useState<number | undefined>(book?.publishedYear);
 
     const handleSearchByIsbn = async () => {
         const book: IBookResponse = await booksService.getBookByIsbn(isbn);
@@ -33,15 +45,17 @@ const BooksFormPage = () => {
 
     return (
         <div>
-            <h1>Add book</h1>
+            <h1>{book ? "Edit book" : "Add book"}</h1>
             <Card className="shadow">
                 <Card.Body>
                     <Row>
                         <Col sm={2}>
-                            <Image src={coverUrl || undefined} className="img-fluid object-fit-scale" rounded/>
+                            <Image src={coverUrl || undefined} className="img-fluid object-fit-scale" alt={book?.title}
+                                   rounded/>
                         </Col>
                         <Col sm={6}>
                             <Form method="post">
+                                <input type="hidden" name="bookId" value={book?.id}/>
                                 <FormGroup controlId="bookIsbn" className="mb-3">
                                     <FormLabel>ISBN</FormLabel>
                                     <InputGroup>
@@ -108,10 +122,12 @@ const BooksFormPage = () => {
                                 <div className="mt-3">
                                     <Button
                                         type="submit"
-                                        variant="primary"
+                                        variant="success"
+                                        className="me-2"
                                     >
-                                        Add
+                                        {book ? "Save" : "Add"}
                                     </Button>
+                                    <NavLink className="btn btn-secondary" to="..">Cancel</NavLink>
                                 </div>
                             </Form>
                         </Col>
@@ -122,4 +138,57 @@ const BooksFormPage = () => {
     );
 };
 
-export default BooksFormPage;
+const action = async ({request}: LoaderFunctionArgs) => {
+    const formData = await request.formData();
+    const {
+        isbn,
+        title,
+        author,
+        publishedYear,
+        coverUrl,
+        bookId
+    } = Object.fromEntries(formData) as Record<string, string>;
+    if (!author)
+        return {errors: {author: true}};
+
+    if (!title)
+        return {errors: {title: true}};
+
+    if (bookId) {
+        await booksService.updateBook(Number(bookId), {
+            title,
+            author,
+            coverUrl: coverUrl || undefined,
+            isbn10: isbn.length === 10 ? isbn : undefined,
+            isbn13: isbn.length === 13 ? isbn : undefined,
+            publishedYear: publishedYear ? Number(publishedYear) : undefined
+        }, request.signal);
+    } else {
+        await booksService.createBook({
+            title,
+            author,
+            coverUrl: coverUrl || undefined,
+            isbn10: isbn.length === 10 ? isbn : undefined,
+            isbn13: isbn.length === 13 ? isbn : undefined,
+            publishedYear: publishedYear ? Number(publishedYear) : undefined
+        }, request.signal);
+    }
+
+    return redirect('/');
+};
+
+const loader = ({params}: LoaderFunctionArgs) => {
+    const {bookId} = params;
+
+    const bookPromise = bookId
+        ? booksService.getBookById(Number(bookId))
+        : Promise.resolve(null);
+
+    return {bookPromise};
+};
+
+export const booksFormPageRoute = {
+    element: <BooksFormPage/>,
+    action: action,
+    loader
+};

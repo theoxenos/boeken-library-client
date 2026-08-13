@@ -28,4 +28,8 @@ const createBook = async (book: TBookRequest, signal?: AbortSignal) => {
     return apiService.post(`${viteApiUrl}/${booksEndpoint}`, book, {signal});
 };
 
-export default {getAllBooks, getBookById, getBookByIsbn, createBook};
+const updateBook = async (id: number, book: TBookRequest, signal?: AbortSignal) => {
+    return apiService.put(`${viteApiUrl}/${booksEndpoint}/${id}`, book, {signal});
+};
+
+export default {getAllBooks, getBookById, getBookByIsbn, createBook, updateBook};

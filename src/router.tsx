@@ -3,11 +3,11 @@ import {booksViewRoute} from "./features/books/loaders/booksViewRoute.tsx";
 import RootErrorBoundary from "./ErrorELement.tsx";
 import AuthView from "./features/auth/AuthView.tsx";
 import {libraryPageRoute} from "./features/library/LibraryPage.tsx";
-import booksFormPageRoute from "./features/books/loaders/booksFormPageRoute.tsx";
 import LibraryPageDefaultDetailCard from "./features/library/components/LibraryPageDefaultDetailCard.tsx";
 import {noteFormRoute} from "./features/library/components/LibraryBookNoteForm.tsx";
 import {libraryBookDetailRoute} from "./features/library/components/LibraryBookDetail.tsx";
 import {libraryBookNotesTableRoute} from "./features/library/components/LibraryBookNotesTable.tsx";
+import {booksFormPageRoute} from "./features/books/BooksFormPage.tsx";
 
 const router = [{
     path: '/',
@@ -50,6 +50,9 @@ const router = [{
             }]
     }, {
         path: '/books/new',
+        ...booksFormPageRoute
+    }, {
+        path: 'books/:bookId/edit',
         ...booksFormPageRoute
     }]
 }];

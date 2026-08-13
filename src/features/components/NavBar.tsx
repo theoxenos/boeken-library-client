@@ -22,7 +22,7 @@ const NavBar = () => {
                             </NavDropdown>
                             <NavDropdown title={user?.name} id="basic-nav-dropdown">
                                 <NavDropdown.Item href="/library/books">My Library</NavDropdown.Item>
-                                <NavDropdown.Item href="#" onClick={() => setUser(null)}>Log Out</NavDropdown.Item>
+                                <NavDropdown.Item href="/login" onClick={() => setUser(null)}>Log Out</NavDropdown.Item>
                             </NavDropdown>
                         </>
                     ) : (

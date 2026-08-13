@@ -26,9 +26,8 @@ const LibraryBookSearch = ({books}: TLibraryBookSearchProps) => {
     };
 
     const buildBookLink = (bookId: number) => {
-        const query = new URLSearchParams(searchParams)
-        const queryValue = query.get('title');
-        return `/library/books/${bookId}${queryValue ? `?title=${queryValue}` : ''}`;
+        const search = searchParams.toString();
+        return `/library/books/${bookId}${search ? `?${search}` : ''}`;
     };
 
     return (

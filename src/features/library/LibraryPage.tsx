@@ -28,11 +28,16 @@ const LibraryPage = () => {
     );
 };
 
-const loader = async ({request: {signal}, url}: LoaderFunctionArgs) => {
+const loader = async ({request: {signal, url}}: LoaderFunctionArgs) => {
     const urlParams = new URL(url).searchParams;
-    const title = urlParams.get("title");
-    const queryParams = title ? {title} : undefined;
-    const booksPromise = libraryService.getBooksFromLibrary(queryParams, signal);
+    const {title, sortBy, sortOrder} = Object.fromEntries(urlParams);
+    
+    const params: Record<string, string> = {};
+    if (title) params.title = title;
+    if (sortBy) params.sortBy = sortBy;
+    if (sortOrder) params.sortOrder = sortOrder;
+
+    const booksPromise = libraryService.getBooksFromLibrary(Object.keys(params).length > 0 ? params : undefined, signal);
 
     return {booksPromise};
 };

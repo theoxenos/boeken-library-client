@@ -5,9 +5,20 @@ import type {LoaderFunctionArgs} from "react-router-dom";
 
 const booksLoader = async ({request: {signal, url}}: LoaderFunctionArgs) => {
     const searchParams = new URL(url).searchParams;
-    const {searchText, searchType} = Object.fromEntries(searchParams);
+    const {searchText, searchType, sortBy, sortOrder} = Object.fromEntries(searchParams);
 
-    const books = booksService.getAllBooks(signal, searchText ? {[searchType]: searchText} : undefined);
+    const params: Record<string, string> = {};
+    if (searchText) {
+        params[searchType] = searchText;
+    }
+    if (sortBy) {
+        params.sortBy = sortBy;
+    }
+    if (sortOrder) {
+        params.sortOrder = sortOrder;
+    }
+
+    const books = booksService.getAllBooks(signal, Object.keys(params).length > 0 ? params : undefined);
 
     return {books};
 };

@@ -1,6 +1,7 @@
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import useUserContext from "../auth/hooks/useUserContext.tsx";
 import BookSearchForm from "../components/BookSearchForm.tsx";
+import BookSortSelector from "../books/components/BookSortSelector.tsx";
 import {useSearchParams} from "react-router-dom";
 
 const NavBar = () => {
@@ -29,7 +30,16 @@ const NavBar = () => {
                         <Nav.Link href="/login">Log In</Nav.Link>
                     )}
                 </Nav>
-                {user && <BookSearchForm key={searchText} searchText={searchText} searchType={searchType}/>}
+                {user && (
+                    <>
+                        <BookSearchForm
+                            key={`${searchText}`}
+                            searchText={searchText}
+                            searchType={searchType}
+                        />
+                        <BookSortSelector/>
+                    </>
+                )}
             </Navbar.Collapse>
         </Navbar>
     );

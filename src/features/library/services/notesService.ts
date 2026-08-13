@@ -26,9 +26,14 @@ const updateNote = async (note: IBaseNote) => {
     return apiService.put(`${viteApiUrl}/${notesEndpoint}/${note.id}`, note);
 };
 
+const deleteNote = async (noteId: number) => {
+    return apiService.delete(`${viteApiUrl}/${notesEndpoint}/${noteId}`);
+};
+
 export default {
     getNoteById,
     getNotesByBookId,
     createNote,
-    updateNote
+    updateNote,
+    deleteNote
 };

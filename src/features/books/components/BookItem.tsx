@@ -15,6 +15,14 @@ const BookItem = ({book, onRemoveFromLibrary, onAddToLibrary, onSetRating}: TBoo
     const handleRatingChange = (newRating: number) => {
         onSetRating(book.id, newRating);
     };
+
+    const formatPublishedYear = (year?: number) => {
+        if (Number(year) < 0) {
+            return `${Math.abs(year!)} BC`
+        }
+        return year?.toString();
+    };
+
     return (
         <Row xs={2} sm={2} md={1} className="g-2">
             <Col>
@@ -30,7 +38,7 @@ const BookItem = ({book, onRemoveFromLibrary, onAddToLibrary, onSetRating}: TBoo
                 <div className="text-muted">
                     <NavLink to={`/?searchText=${book.author}&searchType=author`}>{book.author}</NavLink>
                 </div>
-                <div className="text-secondary">{book.publishedYear}</div>
+                <div className="text-secondary">{formatPublishedYear(book.publishedYear)}</div>
             </Col>
             <div className="d-flex align-items-center gap-2">
                 <StarRating value={rating} onChange={handleRatingChange}/>

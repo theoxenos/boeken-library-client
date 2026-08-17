@@ -49,4 +49,4 @@ const loader = async ({params, request: {signal}}: LoaderFunctionArgs) => {
     return {bookPromise};
 };
 
-export const libraryBookDetailRoute = {loader, element: <LibraryBookDetail/>};
+export const libraryBookDetailRoute = {loader, Component: LibraryBookDetail};

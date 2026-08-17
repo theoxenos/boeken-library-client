@@ -42,4 +42,4 @@ const loader = async ({request: {signal, url}}: LoaderFunctionArgs) => {
     return {booksPromise};
 };
 
-export const libraryPageRoute = {loader, element: <LibraryPage/>};
+export const libraryPageRoute = {loader, Component: LibraryPage};

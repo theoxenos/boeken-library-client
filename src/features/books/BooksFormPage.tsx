@@ -188,7 +188,7 @@ const loader = ({params}: LoaderFunctionArgs) => {
 };
 
 export const booksFormPageRoute = {
-    element: <BooksFormPage/>,
+    Component: BooksFormPage,
     action: action,
     loader
 };

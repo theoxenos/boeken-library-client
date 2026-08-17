@@ -69,7 +69,7 @@ const loader = ({params}: LoaderFunctionArgs) => {
 };
 
 export const noteFormRoute = {
-    element: <LibraryBookNoteForm/>,
+    Component: LibraryBookNoteForm,
     loader,
     action
 };

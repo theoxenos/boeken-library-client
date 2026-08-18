@@ -1,7 +1,7 @@
 import MainLayout from "./features/layouts/MainLayout.tsx";
 import {booksViewRoute} from "./features/books/BooksView.tsx";
 import RootErrorBoundary from "./ErrorELement.tsx";
-import AuthView from "./features/auth/AuthView.tsx";
+import {authViewPageRoute} from "./features/auth/AuthView.tsx";
 import {libraryPageRoute} from "./features/library/LibraryPage.tsx";
 import LibraryPageDefaultDetailCard from "./features/library/components/LibraryPageDefaultDetailCard.tsx";
 import {noteFormRoute} from "./features/library/components/LibraryBookNoteForm.tsx";
@@ -10,6 +10,8 @@ import {libraryBookNotesTableRoute} from "./features/library/components/LibraryB
 import {booksFormPageRoute} from "./features/books/BooksFormPage.tsx";
 import RequireAuth from "./features/components/RequireAuth.tsx";
 import {type RouteObject} from "react-router-dom";
+import {loginFormRoute} from "./features/auth/components/LoginForm.tsx";
+import {registerFormRoute} from "./features/auth/components/RegisterForm.tsx";
 
 const router: RouteObject[] = [{
     path: '/',
@@ -17,12 +19,17 @@ const router: RouteObject[] = [{
     ErrorBoundary: RootErrorBoundary,
     children: [
         {
-            path: '/login',
-            Component: AuthView
-        },
-        {
-            path: '/register',
-            Component: AuthView
+            ...authViewPageRoute,
+            children: [
+                {
+                    path: '/login',
+                    ...loginFormRoute,
+                },
+                {
+                    path: '/register',
+                    ...registerFormRoute,
+                },
+            ]
         },
         {
             Component: RequireAuth,

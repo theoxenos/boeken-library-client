@@ -1,44 +1,18 @@
-import {NavLink, useLocation, useNavigate} from "react-router-dom";
-import LoginForm from "./components/LoginForm.tsx";
-import type {TUserLogin, TUserRegistration} from "./types";
-import authService from "./services/authService.ts";
-import useUserContext from "./hooks/useUserContext.tsx";
-import RegisterForm from "./components/RegisterForm.tsx";
+import {NavLink, Outlet} from "react-router-dom";
+import useAuthForm from "./hooks/useAuthForm.tsx";
 
 const AuthView = () => {
-    const {pathname, state: locationState} = useLocation();
+    const authForm = useAuthForm();
 
-    const navigate = useNavigate();
-
-    const redirectPath = locationState?.from || '/';
-
-    const showLoginForm = pathname === '/login';
-    const showRegisterForm = pathname === '/register';
-
-    const {setUser} = useUserContext();
-
-    const handleLogin = async (loginData: TUserLogin) => {
-        const authResponse = await authService.login(loginData);
-        setUser(authResponse?.error ? null : authResponse);
-        return navigate(redirectPath);
-    };
-
-    const handleRegister = async (registerData: TUserRegistration) => {
-        try {
-            await authService.register(registerData);
-            return navigate('/login');
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    const showLoginForm = authForm === 'login';
+    const showRegisterForm = authForm === 'register';
 
     return (
         <div className="row align-content-center h-100">
             <div className="col-12 col-md-6 offset-md-3">
                 <div className="card shadow">
                     <div className="card-body">
-                        {showLoginForm && <LoginForm onLogin={handleLogin}/>}
-                        {showRegisterForm && <RegisterForm onRegister={handleRegister}/>}
+                        <Outlet/>
                     </div>
                     <div className="card-footer d-flex flex-row justify-content-center">
                         <div>
@@ -56,4 +30,6 @@ const AuthView = () => {
     );
 };
 
-export default AuthView;
+export const authViewPageRoute = {
+    Component: AuthView,
+}

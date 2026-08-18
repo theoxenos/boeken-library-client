@@ -1,73 +1,58 @@
-import {useState, type SubmitEvent} from "react";
-import type {TUserRegistration} from "../types";
+import {useState} from "react";
+import {Form, type LoaderFunctionArgs} from "react-router-dom";
+import {Button, FormControl, FormGroup, FormLabel} from "react-bootstrap";
+import authService from "../services/authService.ts";
 
-type TRegisterFormProps = {
-    onRegister: (user: TUserRegistration) => void;
-}
-
-const RegisterForm = ({onRegister}: TRegisterFormProps) => {
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
+const RegisterForm = () => {
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        onRegister({
-            name,
-            email,
-            password
-        });
-    };
-
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-                <label htmlFor="name" className="form-label">Name</label>
-                <input type="text"
-                       id="name"
-                       name="name"
-                       className="form-control"
-                       placeholder="Name"
-                       value={name}
-                       onChange={e => setName(e.target.value)}/>
-            </div>
-            <div className="mb-3">
-                <label htmlFor="email" className="form-label">E-mail</label>
-                <input type="text"
-                       id="email"
-                       name="email"
-                       className="form-control"
-                       placeholder="E-mail"
-                       value={email}
-                       onChange={e => setEmail(e.target.value)}/>
-            </div>
-            <div className="mb-3">
-                <label htmlFor="password" className="form-label">Password</label>
-                <input type="password"
-                       id="password"
-                       name="password"
-                       className="form-control"
-                       placeholder="Password"
-                       value={password}
-                       onChange={e => setPassword(e.target.value)}
-                />
-            </div>
-            <div className="mb-3">
-                <label htmlFor="passwordConfirm" className="form-label">Confirm Password</label>
-                <input type="password"
-                       id="passwordConfirm"
-                       name="passwordConfirm"
-                       className="form-control"
-                       placeholder="Repeat password"
-                       pattern={password}
-                       title="Passwords do not match"
-                />
-            </div>
-            <div className="mb-3">
-                <button className="btn btn-success" type="submit">Register</button>
-            </div>
-        </form>
+        <Form method="post">
+            <FormGroup className="mb-3" controlId="name">
+                <FormLabel>Name</FormLabel>
+                <FormControl type="text"
+                             name="name"
+                             placeholder="Name"
+                             required/>
+            </FormGroup>
+            <FormGroup className="mb-3" controlId="email">
+                <FormLabel>E-mail</FormLabel>
+                <FormControl type="email"
+                             name="email"
+                             placeholder="E-mail"
+                             required/>
+            </FormGroup>
+            <FormGroup className="mb-3" controlId="password">
+                <FormLabel>Password</FormLabel>
+                <FormControl type="password"
+                             name="password"
+                             placeholder="Password"
+                             onChange={e => setPassword(e.target.value)}
+                             required/>
+            </FormGroup>
+            <FormGroup className="mb-3" controlId="passwordConfirm">
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl type="password"
+                             name="passwordConfirm"
+                             placeholder="Repeat password"
+                             pattern={password}
+                             title="Passwords do not match"
+                             required/>
+            </FormGroup>
+            <Button variant="success" type="submit">Register</Button>
+        </Form>
     );
 };
 
-export default RegisterForm;
+const action = async ({request}: LoaderFunctionArgs) => {
+    const formData = await request.formData();
+    const {name, email, password} = Object.fromEntries(formData);
+
+    await authService.register({name: name.toString(), email: email.toString(), password: password.toString()});
+};
+
+export const registerFormRoute = {
+    Component: RegisterForm,
+    action,
+    handle: {authForm: 'register'}
+};

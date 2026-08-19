@@ -5,6 +5,7 @@ import BookItem from "./components/BookItem.tsx";
 import libraryService from "../library/services/libraryService.ts";
 import {Col, Row} from "react-bootstrap";
 import booksService from "./services/booksService.ts";
+import BooksViewSkeleton from "./components/BooksViewSkeleton.tsx";
 
 const BooksView = () => {
     const {books: booksPromise} = useLoaderData();
@@ -27,7 +28,7 @@ const BooksView = () => {
 
     return (
         <Row xs={1} md={4} lg={6} className="g-3">
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<BooksViewSkeleton/>}>
                 <Await resolve={booksPromise}>
                     {(books: IBook[]) => books.map((book) => (
                         <Col key={book.id} className="mb-3 h-100">

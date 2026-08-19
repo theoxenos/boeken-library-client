@@ -3,13 +3,14 @@ import {Button, FormControl, FormGroup, FormLabel} from "react-bootstrap";
 import type {IBookNote} from "../types";
 import {Suspense} from "react";
 import notesService from "../services/notesService.ts";
+import LibraryBookNoteFormSkeleton from "./LibraryBookNoteFormSkeleton.tsx";
 
 const LibraryBookNoteForm = () => {
     const {notePromise} = useLoaderData() as { notePromise: Promise<IBookNote | null> };
     const {bookId} = useParams();
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LibraryBookNoteFormSkeleton isEdit={!!notePromise}/>}>
             <Await resolve={notePromise}>
                 {(note) => (
                     <>
@@ -65,7 +66,8 @@ const action = async ({request}: LoaderFunctionArgs) => {
 const loader = ({params}: LoaderFunctionArgs) => {
     const {noteId} = params;
 
-    return {notePromise: noteId ? notesService.getNoteById(Number(noteId)) : Promise.resolve(null)};
+    const notePromise = noteId ? notesService.getNoteById(Number(noteId)) : null;
+    return {notePromise};
 };
 
 export const noteFormRoute = {

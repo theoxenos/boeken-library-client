@@ -4,13 +4,14 @@ import {Suspense} from "react";
 import type {ILibraryBook} from "./types";
 import LibraryBookSearch from "./components/LibraryBookSearch.tsx";
 import libraryService from "./services/libraryService.ts";
+import LibraryPageSkeleton from "./components/LibraryPageSkeleton.tsx";
 
 const LibraryPage = () => {
     const {booksPromise} = useLoaderData();
 
     return (
         <Row>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<LibraryPageSkeleton/>}>
                 <Await resolve={booksPromise}>
                     {(books: ILibraryBook[]) => (
                         <>

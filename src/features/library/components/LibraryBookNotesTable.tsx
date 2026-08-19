@@ -4,6 +4,7 @@ import {Await, Form, type LoaderFunctionArgs, NavLink, redirect, useLoaderData, 
 import {Suspense, useEffect, useState} from "react";
 import type {IBookNote} from "../types";
 import notesService from "../services/notesService.ts";
+import LibraryBookNotesTableSkeleton from "./LibraryBookNotesTableSkeleton.tsx";
 
 const LibraryBookNotesTable = () => {
     const {notesPromise}: { notesPromise: Promise<IBookNote[]> } = useLoaderData();
@@ -28,7 +29,7 @@ const LibraryBookNotesTable = () => {
                 </tr>
                 </thead>
                 <tbody>
-                <Suspense>
+                <Suspense fallback={<LibraryBookNotesTableSkeleton/>}>
                     <Await resolve={notesPromise}>
                         {(bookNotes: IBookNote[]) =>
                             bookNotes.map(note => (

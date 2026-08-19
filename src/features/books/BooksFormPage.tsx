@@ -3,6 +3,7 @@ import {Await, Form, type LoaderFunctionArgs, NavLink, redirect, useActionData, 
 import {Suspense, useState} from "react";
 import booksService from "./services/booksService.ts";
 import type {IBookResponse} from "./types";
+import BooksFormPageSkeleton from "./components/BooksFormPageSkeleton.tsx";
 
 type BooksFormErrors = {
     errors: {
@@ -15,10 +16,10 @@ type BooksFormErrors = {
 }
 
 const BooksFormPage = () => {
-    const {bookPromise} = useLoaderData() as { bookPromise: Promise<IBookResponse | null> };
+    const {bookPromise} = useLoaderData();
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<BooksFormPageSkeleton isEdit={!!bookPromise}/>}>
             <Await resolve={bookPromise}>
                 {(book: IBookResponse | null) => <BooksForm book={book}/>}
             </Await>
@@ -182,7 +183,7 @@ const loader = ({params}: LoaderFunctionArgs) => {
 
     const bookPromise = bookId
         ? booksService.getBookById(Number(bookId))
-        : Promise.resolve(null);
+        : null;
 
     return {bookPromise};
 };

@@ -48,7 +48,14 @@ const action = async ({request}: LoaderFunctionArgs) => {
     const formData = await request.formData();
     const {name, email, password} = Object.fromEntries(formData);
 
-    await authService.register({name: name.toString(), email: email.toString(), password: password.toString()});
+    const res = await authService.register({
+        name: name.toString(),
+        email: email.toString(),
+        password: password.toString()
+    });
+
+    if (!res)
+        return redirect('/login');
 };
 
 export const registerFormRoute = {

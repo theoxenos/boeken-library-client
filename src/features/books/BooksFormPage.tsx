@@ -4,6 +4,7 @@ import {Suspense, useState} from "react";
 import booksService from "./services/booksService.ts";
 import type {IBookResponse} from "./types";
 import BooksFormPageSkeleton from "./components/BooksFormPageSkeleton.tsx";
+import useNotification from "../notification/hooks/useNotification.tsx";
 
 type BooksFormErrors = {
     isbn?: boolean;
@@ -27,6 +28,9 @@ const BooksFormPage = () => {
 
 const BooksForm = ({book}: { book: IBookResponse | null }) => {
     const errors = useActionData() as BooksFormErrors | undefined;
+    const {setNotification} = useNotification();
+
+    const [isSearching, setIsSearching] = useState<boolean>(false);
 
     const [coverUrl, setCoverUrl] = useState<string>(book?.coverUrl ?? "");
     const [isbn, setIsbn] = useState<string>(book?.isbn10 || book?.isbn13 || "");
@@ -35,11 +39,27 @@ const BooksForm = ({book}: { book: IBookResponse | null }) => {
     const [year, setYear] = useState<number | undefined>(book?.publishedYear);
 
     const handleSearchByIsbn = async () => {
+        setIsSearching(true);
+
+        if (!isbn.match(/^\d{10}|\d{13}$/)) {
+            setIsSearching(false);
+            setNotification("Invalid ISBN", "danger");
+            return;
+        }
+
         const book: IBookResponse = await booksService.getBookByIsbn(isbn);
+
+        if (!book) {
+            setIsSearching(false);
+            setNotification("Book not found", "danger");
+            return;
+        }
+
         setCoverUrl(book.coverUrl ?? "");
         setTitle(book.title);
         setAuthor(book.author);
         setYear(book.publishedYear);
+        setIsSearching(false);
     };
 
     return (
@@ -64,6 +84,7 @@ const BooksForm = ({book}: { book: IBookResponse | null }) => {
                                             min={0}
                                             placeholder="Enter ISBN"
                                             value={isbn}
+                                            disabled={isSearching}
                                             onChange={(e) => setIsbn(e.target.value)}
                                         />
                                         <Button type="button" variant="outline-secondary"

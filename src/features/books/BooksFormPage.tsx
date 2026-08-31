@@ -6,14 +6,12 @@ import type {IBookResponse} from "./types";
 import BooksFormPageSkeleton from "./components/BooksFormPageSkeleton.tsx";
 
 type BooksFormErrors = {
-    errors: {
-        isbn?: boolean;
-        title?: boolean;
-        author?: boolean;
-        publishedYear?: boolean;
-        coverUrl?: boolean;
-    }
-}
+    isbn?: boolean;
+    title?: boolean;
+    author?: boolean;
+    publishedYear?: boolean;
+    coverUrl?: boolean;
+};
 
 const BooksFormPage = () => {
     const {bookPromise} = useLoaderData();
@@ -80,7 +78,7 @@ const BooksForm = ({book}: { book: IBookResponse | null }) => {
                                         placeholder="Enter title"
                                         value={title}
                                         onChange={(e) => setTitle(e.target.value)}
-                                        isInvalid={errors?.errors.title}
+                                        isInvalid={errors?.title}
                                     />
                                     <FormControl.Feedback type="invalid">
                                         Please enter a valid title.
@@ -94,7 +92,7 @@ const BooksForm = ({book}: { book: IBookResponse | null }) => {
                                         placeholder="Enter author"
                                         value={author}
                                         onChange={(e) => setAuthor(e.target.value)}
-                                        isInvalid={errors?.errors.author}
+                                        isInvalid={errors?.author}
                                     />
                                     <FormControl.Feedback type="invalid">
                                         Please enter a valid author.
@@ -114,7 +112,7 @@ const BooksForm = ({book}: { book: IBookResponse | null }) => {
                                     <FormLabel>Cover URL</FormLabel>
                                     <FormControl
                                         name="coverUrl"
-                                        type="text"
+                                        type="url"
                                         placeholder="Enter cover URL"
                                         value={coverUrl}
                                         onChange={(e) => setCoverUrl(e.target.value)}
@@ -149,11 +147,17 @@ const action = async ({request}: LoaderFunctionArgs) => {
         coverUrl,
         bookId
     } = Object.fromEntries(formData) as Record<string, string>;
+
+    const errors: BooksFormErrors = {}
     if (!author)
-        return {errors: {author: true}};
+        errors.author = true;
 
     if (!title)
-        return {errors: {title: true}};
+        errors.title = true;
+
+    if (Object.keys(errors).length > 0) {
+        return errors
+    }
 
     if (bookId) {
         await booksService.updateBook(Number(bookId), {

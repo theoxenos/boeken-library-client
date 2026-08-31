@@ -8,26 +8,46 @@ import booksService from "./services/booksService.ts";
 import BooksViewSkeleton from "./components/BooksViewSkeleton.tsx";
 import BookSearchForm from "./components/BookSearchForm.tsx";
 import BookSortSelector from "./components/BookSortSelector.tsx";
+import useNotification from "../notification/hooks/useNotification.tsx";
 
 const BooksView = () => {
     const {books: booksPromise} = useLoaderData();
     const {revalidate} = useRevalidator();
     const [searchParams] = useSearchParams();
     const {searchText = '', searchType = 'title'} = Object.fromEntries(searchParams);
+    const {setNotification} = useNotification();
 
     const handleAddToLibrary = async (bookId: number) => {
-        await libraryService.addToLibrary(bookId);
-        await revalidate();
+        try {
+            await libraryService.addToLibrary(bookId);
+            await revalidate();
+            setNotification('Book added to library', 'success');
+        } catch (error) {
+            console.error('Error adding book to library:', error);
+            setNotification('Error adding book to library', 'danger');
+        }
     };
 
     const handleRemoveFromLibrary = async (bookId: number) => {
-        await libraryService.removeFromLibrary(bookId);
-        await revalidate();
+        try {
+            await libraryService.removeFromLibrary(bookId);
+            await revalidate();
+            setNotification('Book removed from library', 'success');
+        } catch (error) {
+            console.error('Error removing book from library:', error);
+            setNotification('Error removing book from library', 'danger');
+        }
     };
 
     const handleSetRating = async (bookId: number, rating: number) => {
-        await libraryService.updateLibraryBook(bookId, rating);
-        await revalidate();
+        try {
+            await libraryService.updateLibraryBook(bookId, rating);
+            await revalidate();
+            setNotification('Book rating updated', 'success');
+        } catch (error) {
+            console.error('Error setting book rating:', error);
+            setNotification('Error setting book rating', 'danger');
+        }
     };
 
     return (

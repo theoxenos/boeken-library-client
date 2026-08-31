@@ -8,7 +8,7 @@ const BookSortSelector = () => {
     const sortOrder = searchParams.get('sortOrder') || 'asc';
 
     const handleSortChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        const newParams = new URLSearchParams(searchParams);
+        const newParams = new URLSearchParams({sortBy, sortOrder});
         const {name, value} = e.target;
         newParams.set(name, value);
         setSearchParams(newParams);

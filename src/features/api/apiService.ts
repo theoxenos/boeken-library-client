@@ -24,7 +24,12 @@ const request = async (url: string, options: RequestInit = {}) => {
     //     // Redirect to login or refresh token
     // }
 
-    return response.json();
+    const hasJsonContent = response.headers.get('content-type')?.includes('application/json');
+    if (hasJsonContent) {
+        return response.json();
+    } else {
+        return response.text();
+    }
 };
 
 const get = (url: string, options?: RequestInit) => {

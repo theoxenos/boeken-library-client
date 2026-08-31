@@ -1,4 +1,4 @@
-import {Await, type LoaderFunctionArgs, useLoaderData, useRevalidator} from "react-router-dom";
+import {Await, type LoaderFunctionArgs, useLoaderData, useRevalidator, useSearchParams} from "react-router-dom";
 import {Suspense} from "react";
 import type {IBook} from "./types";
 import BookItem from "./components/BookItem.tsx";
@@ -6,10 +6,14 @@ import libraryService from "../library/services/libraryService.ts";
 import {Col, Row} from "react-bootstrap";
 import booksService from "./services/booksService.ts";
 import BooksViewSkeleton from "./components/BooksViewSkeleton.tsx";
+import BookSearchForm from "./components/BookSearchForm.tsx";
+import BookSortSelector from "./components/BookSortSelector.tsx";
 
 const BooksView = () => {
     const {books: booksPromise} = useLoaderData();
     const {revalidate} = useRevalidator();
+    const [searchParams] = useSearchParams();
+    const {searchText = '', searchType = 'title'} = Object.fromEntries(searchParams);
 
     const handleAddToLibrary = async (bookId: number) => {
         await libraryService.addToLibrary(bookId);
@@ -27,20 +31,30 @@ const BooksView = () => {
     };
 
     return (
-        <Row xs={1} md={4} lg={6} className="g-3">
-            <Suspense fallback={<BooksViewSkeleton/>}>
-                <Await resolve={booksPromise}>
-                    {(books: IBook[]) => books.map((book) => (
-                        <Col key={book.id} className="mb-3 h-100">
-                            <BookItem book={book}
-                                      onAddToLibrary={handleAddToLibrary}
-                                      onRemoveFromLibrary={handleRemoveFromLibrary}
-                                      onSetRating={handleSetRating}/>
-                        </Col>
-                    ))}
-                </Await>
-            </Suspense>
-        </Row>
+        <>
+            <Row xs={1} className="justify-content-center mb-4">
+                <Col xs={7}>
+                    <BookSearchForm searchText={searchText} searchType={searchType}/>
+                </Col>
+                <Col xs={3}>
+                    <BookSortSelector/>
+                </Col>
+            </Row>
+            <Row xs={1} md={4} lg={6} className="g-3">
+                <Suspense fallback={<BooksViewSkeleton/>}>
+                    <Await resolve={booksPromise}>
+                        {(books: IBook[]) => books.map((book) => (
+                            <Col key={book.id} className="mb-3 h-100">
+                                <BookItem book={book}
+                                          onAddToLibrary={handleAddToLibrary}
+                                          onRemoveFromLibrary={handleRemoveFromLibrary}
+                                          onSetRating={handleSetRating}/>
+                            </Col>
+                        ))}
+                    </Await>
+                </Suspense>
+            </Row>
+        </>
     );
 };
 

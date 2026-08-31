@@ -1,13 +1,8 @@
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import useUserContext from "../auth/hooks/useUserContext.tsx";
-import BookSearchForm from "../components/BookSearchForm.tsx";
-import BookSortSelector from "../books/components/BookSortSelector.tsx";
-import {useSearchParams} from "react-router-dom";
 
 const NavBar = () => {
     const {user, setUser} = useUserContext();
-    const [searchParams] = useSearchParams();
-    const {searchText = '', searchType = 'title'} = Object.fromEntries(searchParams);
 
     return (
         <Navbar expand="sm" className="bg-body-tertiary mb-3 p-3">
@@ -30,16 +25,6 @@ const NavBar = () => {
                         <Nav.Link href="/login">Log In</Nav.Link>
                     )}
                 </Nav>
-                {user && (
-                    <>
-                        <BookSearchForm
-                            key={`${searchText}`}
-                            searchText={searchText}
-                            searchType={searchType}
-                        />
-                        <BookSortSelector/>
-                    </>
-                )}
             </Navbar.Collapse>
         </Navbar>
     );

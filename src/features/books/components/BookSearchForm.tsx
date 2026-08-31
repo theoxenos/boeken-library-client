@@ -7,7 +7,7 @@ type BookSearchFormProps = {
 }
 
 const BookSearchForm = ({searchText, searchType}: BookSearchFormProps) => (
-    <Form className="col-12 col-md-6">
+    <Form>
         <InputGroup>
             <FormControl id="searchText"
                          name="searchText"
